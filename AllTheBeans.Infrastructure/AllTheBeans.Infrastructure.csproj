@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.20" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AllTheBeans.Core\AllTheBeans.Core.csproj" />
+  </ItemGroup>
+
 </Project>
