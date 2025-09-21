@@ -1,4 +1,5 @@
 using AllTheBeans.Infrastructure;
+using AllTheBeans.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+    DataSeeder.Seed(db);
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
