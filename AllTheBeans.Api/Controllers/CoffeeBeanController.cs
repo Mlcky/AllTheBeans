@@ -39,5 +39,55 @@ namespace AllTheBeans.Api.Controllers
             }
             return Ok(coffeeBean);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddCoffeeBean([FromBody] CreateCoffeeBeanDto bean)
+        {
+            try
+            {
+                CoffeeBeanDto coffeeBean = await _coffeeBeanService.CreateAsync(bean);
+                return CreatedAtAction(nameof(GetCoffeeBean), new { id = coffeeBean.Id }, coffeeBean);
+            }
+            catch (DbUpdateException)
+            {
+                return StatusCode(500, "An error occured while adding the coffee bean");
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCoffeeBean(int id, [FromBody] UpdateCoffeeBeanDto bean)
+        {
+            try
+            {
+                CoffeeBeanDto coffeeBean = await _coffeeBeanService.UpdateAsync(id, bean);
+                if (coffeeBean is null)
+                {
+                    return NotFound();
+                }
+                return Ok(coffeeBean);
+            }
+            catch (DbUpdateException)
+            {
+                return StatusCode(500, "An error occured while updating the coffee bean");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCoffeeBean(int id)
+        {
+            try
+            {
+                bool beanDeleted = await _coffeeBeanService.DeleteAsync(id);
+                if (!beanDeleted)
+                {
+                    return NotFound();
+                }
+                return NoContent();
+            }
+            catch
+            {
+                return StatusCode(500, "An error occured while adding the coffee bean");
+            }
+        }
     }
 }
