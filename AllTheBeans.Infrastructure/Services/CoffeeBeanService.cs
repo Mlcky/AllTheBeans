@@ -22,6 +22,8 @@ namespace AllTheBeans.Infrastructure.Services
 
         public async Task<List<CoffeeBeanDto>> GetCoffeeBeansAsync()
         {
+
+            // get all coffee beans including their related fields, colour and country
             List<CoffeeBeanDto> coffeeBeans = await _context.CoffeeBeans
                 .Include(coffeeBean => coffeeBean.Colour)
                 .Include(coffeeBean => coffeeBean.Country)
@@ -41,6 +43,7 @@ namespace AllTheBeans.Infrastructure.Services
         }
         public async Task<CoffeeBeanDto?> GetByIdAsync(int id)
         {
+            // Get a single coffee bean by its id, including its related fields colour and country
             CoffeeBeanDto? coffeeBean = await _context.CoffeeBeans
                 .Include(coffeeBean => coffeeBean.Colour)
                 .Include(coffeeBean => coffeeBean.Country)
@@ -60,6 +63,7 @@ namespace AllTheBeans.Infrastructure.Services
         }
         public async Task<CoffeeBeanDto> CreateAsync(CreateCoffeeBeanDto bean)
         {
+            // Grab the country if it exists or create a new one
             Country? country = await _context.Countries.FirstOrDefaultAsync(c => c.Name == bean.Country);
             if (country is null)
             {
@@ -69,6 +73,7 @@ namespace AllTheBeans.Infrastructure.Services
                 };
             }
 
+            // Grab the colour if it exists or create a new one
             Colour? colour = await _context.Colours.FirstOrDefaultAsync(c => c.Name == bean.Colour);
             if (colour is null)
             {
@@ -78,6 +83,7 @@ namespace AllTheBeans.Infrastructure.Services
                 };
             }
 
+            // Create a new coffee bean
             CoffeeBean coffeeBean = new CoffeeBean
             {
                 Name = bean.Name,
@@ -88,6 +94,7 @@ namespace AllTheBeans.Infrastructure.Services
                 Country = country,
             };
 
+            // save to the db
             try
             {
                 await _context.AddAsync(coffeeBean);
@@ -99,6 +106,7 @@ namespace AllTheBeans.Infrastructure.Services
                 throw;
             }
 
+            // create a dto to return to the user
             CoffeeBeanDto coffeeBeanDto = new CoffeeBeanDto
             {
                 Id = coffeeBean.Id,
@@ -115,6 +123,7 @@ namespace AllTheBeans.Infrastructure.Services
 
         public async Task<CoffeeBeanDto> UpdateAsync(int id, UpdateCoffeeBeanDto bean)
         {
+            // Get the existing coffee bean from the db
             CoffeeBean? coffeeBean = await _context.CoffeeBeans
                 .Include(coffeeBean => coffeeBean.Colour)
                 .Include(coffeeBean => coffeeBean.Country).FirstOrDefaultAsync(c => c.Id == id);
@@ -124,6 +133,7 @@ namespace AllTheBeans.Infrastructure.Services
                 return null;
             }
 
+            // Grab the country if it exists or create a new one
             Country? country = await _context.Countries.FirstOrDefaultAsync(c => c.Name == bean.Country);
             if (country is null)
             {
@@ -133,6 +143,7 @@ namespace AllTheBeans.Infrastructure.Services
                 };
             }
 
+            // Grab the colour if it exists or create a new one
             Colour? colour = await _context.Colours.FirstOrDefaultAsync(c => c.Name == bean.Colour);
             if (colour is null)
             {
@@ -142,6 +153,7 @@ namespace AllTheBeans.Infrastructure.Services
                 };
             }
 
+            // Update the coffee bean
             coffeeBean.Name = bean.Name;
             coffeeBean.Description = bean.Description;
             coffeeBean.Cost = bean.Cost;
@@ -149,6 +161,7 @@ namespace AllTheBeans.Infrastructure.Services
             coffeeBean.Colour = colour;
             coffeeBean.Country = country;
 
+            // Save to the db
             try
             {
                 await _context.SaveChangesAsync();
@@ -159,6 +172,7 @@ namespace AllTheBeans.Infrastructure.Services
                 throw;
             }
 
+            // Create a dto to return to the user
             CoffeeBeanDto coffeeBeanDto = new CoffeeBeanDto
             {
                 Id = coffeeBean.Id,
@@ -174,10 +188,13 @@ namespace AllTheBeans.Infrastructure.Services
         }
         public async Task<bool> DeleteAsync(int id)
         {
+
+            // get the existing coffee bean fromn the db
             CoffeeBean? beanToDelete = await _context.CoffeeBeans
                 .Include(coffeeBean => coffeeBean.Colour)
                 .Include(coffeeBean => coffeeBean.Country).FirstOrDefaultAsync(c => c.Id == id);
 
+            // if it exists, delete it and save changes
             if (beanToDelete is not null)
             {
                 _context.CoffeeBeans.Remove(beanToDelete);

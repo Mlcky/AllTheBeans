@@ -19,6 +19,7 @@ namespace AllTheBeans.Api.Controllers
             _beanOfTheDayService = beanOfTheDayService;
         }
 
+        // Retreives the coffee bean of the day, if one is not already set, it sets a new bean of the day
         [HttpGet]
         public async Task<IActionResult> GetBeanOfTheDay()
         {

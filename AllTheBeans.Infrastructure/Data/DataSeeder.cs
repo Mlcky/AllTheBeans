@@ -20,8 +20,9 @@ namespace AllTheBeans.Infrastructure.Data
             {
                 return;
             }
-
+            // read the text contents from the json file
             var rawJsonData = File.ReadAllText("AllTheBeans.Json");
+            // convert the json to a list of coffee beans
             var beansFromJson = JsonSerializer.Deserialize<List<CoffeeBeanJsonDto>>(rawJsonData, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -33,6 +34,7 @@ namespace AllTheBeans.Infrastructure.Data
                 List<Colour> colours = new List<Colour>();
                 List<Country> countries = new List<Country>();
 
+                // loop through each bean from the json and add it to the list above
                 foreach (CoffeeBeanJsonDto coffeeBean in beansFromJson)
                 {
                     // see if the country or color exists already
@@ -51,6 +53,7 @@ namespace AllTheBeans.Infrastructure.Data
                         colours.Add(colour);
                     }
 
+                    // convert the cost from a string to a decimal
                     decimal cost;
                     bool convertDecimal = Decimal.TryParse(coffeeBean.Cost, NumberStyles.Currency, CultureInfo.GetCultureInfo("en-GB"), out cost);
 
@@ -70,11 +73,10 @@ namespace AllTheBeans.Infrastructure.Data
 
                         });
                 }
+                // add the list of coffee beans to the db
                 await context.AddRangeAsync(coffeeBeans);
                 await context.SaveChangesAsync();
             }
-            // got all data from json, need to loop through and push to db
-
         }
     }
 }

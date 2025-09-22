@@ -20,6 +20,7 @@ namespace AllTheBeans.Api.Controllers
             _coffeeBeanService = coffeeBeanService;
         }
 
+        // Retreives a list of all available coffee beans.
         [HttpGet]
         public async Task<IActionResult> GetCoffeeBeans()
         {
@@ -28,6 +29,7 @@ namespace AllTheBeans.Api.Controllers
             return Ok(coffeeBeans);
         }
 
+        // Retreives a specific cofee bean by its ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCoffeeBean(int id)
         {
@@ -40,6 +42,8 @@ namespace AllTheBeans.Api.Controllers
             return Ok(coffeeBean);
         }
 
+
+        //Adds a new coffee bean to the collection
         [HttpPost]
         public async Task<IActionResult> AddCoffeeBean([FromBody] CreateCoffeeBeanDto bean)
         {
@@ -54,6 +58,7 @@ namespace AllTheBeans.Api.Controllers
             }
         }
 
+        // Updates an existing coffee bean identified by its ID
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCoffeeBean(int id, [FromBody] UpdateCoffeeBeanDto bean)
         {
@@ -72,6 +77,8 @@ namespace AllTheBeans.Api.Controllers
             }
         }
 
+
+        // Deletes a coffee bean identified by its ID
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCoffeeBean(int id)
         {
