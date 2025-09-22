@@ -63,6 +63,7 @@ namespace AllTheBeans.Infrastructure.Services
             // Get the bean of the day from yesterday
             BeanOfTheDay? yesterdayBeanOfTheDay = await _context.BeanOfTheDays.FirstOrDefaultAsync(b => b.Date == yestday);
 
+
             // Get all the coffee beans
             List<CoffeeBean> coffeeBeans = await _context.CoffeeBeans
                 .Include(coffeeBean => coffeeBean.Colour)
@@ -75,11 +76,16 @@ namespace AllTheBeans.Infrastructure.Services
                 coffeeBeans.RemoveAll(c => c.Id == yesterdayBeanOfTheDay.Id);
             }
 
+            // If there are no coffee beans, return null
+            if (coffeeBeans.Count == 0)
+            {
+                return null;
+            }
+
             // Select a new botd at random
             Random rnd = new Random();
-            int botdId = rnd.Next(0, (coffeeBeans.Count - 1));
-
-            CoffeeBean? beanOfTheDayCoffeeBean = coffeeBeans.FirstOrDefault(c => c.Id == botdId);
+            int index = rnd.Next(0, coffeeBeans.Count);
+            CoffeeBean beanOfTheDayCoffeeBean = coffeeBeans[index];
 
             if (beanOfTheDayCoffeeBean is null)
             {
